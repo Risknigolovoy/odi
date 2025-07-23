@@ -20,7 +20,7 @@ class Game {
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         document.getElementById('app-container').appendChild(this.app.canvas);
 
-        this.assetGenerator.generateAll();
+        this.assetGenerator = new AssetGenerator(this.app);
 
         this.sceneManager = new SceneManager(this.app);
         this.sceneManager.start();
