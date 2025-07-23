@@ -1,25 +1,38 @@
+// src/managers/AssetGenerator.js
+
 export class AssetGenerator {
-    constructor(app) { // 1. Принимаем 'app' в конструкторе
-        this.app = app; // 2. Сохраняем ссылку на приложение
-        this.textures = {};
+    constructor(app) {
+        this.app = app;
+        this.aliases = []; // Список имен (алиасов) всех ассетов
     }
 
+    // Этот метод теперь только создает текстуры и регистрирует их
     generateAll() {
-        this.textures.characterFrame1 = this.createCharacterTexture(false);
-        this.textures.characterFrame2 = this.createCharacterTexture(true);
-        this.textures.backgrounds = this.createBackgrounds();
-        
-        PIXI.Assets.add({ alias: 'characterWalk1', src: this.textures.characterFrame1 });
-        PIXI.Assets.add({ alias: 'characterWalk2', src: this.textures.characterFrame2 });
+        // --- Персонаж ---
+        const charFrame1 = this.createCharacterTexture(false);
+        const charFrame2 = this.createCharacterTexture(true);
+        PIXI.Assets.add({ alias: 'characterWalk1', src: charFrame1 });
+        PIXI.Assets.add({ alias: 'characterWalk2', src: charFrame2 });
+        this.aliases.push('characterWalk1', 'characterWalk2');
 
-        for (let i = 0; i < this.textures.backgrounds.length; i++) {
-            PIXI.Assets.add({ alias: `bg${i}`, src: this.textures.backgrounds[i] });
+        // --- Фоны ---
+        const backgrounds = this.createBackgrounds();
+        for (let i = 0; i < backgrounds.length; i++) {
+            const alias = `bg${i}`;
+            PIXI.Assets.add({ alias: alias, src: backgrounds[i] });
+            this.aliases.push(alias);
         }
+    }
+
+    // НОВЫЙ МЕТОД: Асинхронно загружает все созданные ассеты
+    async loadAssets() {
+        console.log("Загрузка ассетов...", this.aliases);
+        await PIXI.Assets.load(this.aliases);
+        console.log("Ассеты загружены!");
     }
 
     createCharacterTexture(isStep) {
         const g = new PIXI.Graphics();
-        
         g.fill(0x3355FF).rect(2, 8, 12, 16);
         g.fill(0xFFDDC9).rect(4, 0, 8, 8);
         g.fill(0x442211).rect(4, 0, 8, 4);
@@ -31,8 +44,6 @@ export class AssetGenerator {
             g.rect(2, 24, 4, 8);
             g.rect(10, 24, 4, 10);
         }
-
-        // 3. Используем this.app вместо глобальной переменной
         return this.app.renderer.generateTexture(g);
     }
 
@@ -41,7 +52,6 @@ export class AssetGenerator {
         const width = 800;
         const height = 450;
 
-        // 4. Используем this.app.renderer для всех фонов
         const bg0 = new PIXI.Graphics().fill(0x2d2d3a).rect(0, 0, width, height).fill(0x5a4a3a).rect(0, height - 50, width, 50).fill(0x9acde3).rect(100, 50, 150, 150).fill(0x111111).rect(105, 55, 65, 140).fill(0x111111).rect(180, 55, 65, 140).fill(0x4a3a2a).rect(500, 200, 200, 200).fill(0xffffff).rect(520, 180, 50, 20);
         backgrounds.push(this.app.renderer.generateTexture(bg0));
 
