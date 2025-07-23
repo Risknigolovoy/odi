@@ -1,5 +1,6 @@
 export class AssetGenerator {
-    constructor() {
+    constructor(app) { // 1. Принимаем 'app' в конструкторе
+        this.app = app; // 2. Сохраняем ссылку на приложение
         this.textures = {};
     }
 
@@ -31,7 +32,8 @@ export class AssetGenerator {
             g.rect(10, 24, 4, 10);
         }
 
-        return app.renderer.generateTexture(g);
+        // 3. Используем this.app вместо глобальной переменной
+        return this.app.renderer.generateTexture(g);
     }
 
     createBackgrounds() {
@@ -39,23 +41,24 @@ export class AssetGenerator {
         const width = 800;
         const height = 450;
 
+        // 4. Используем this.app.renderer для всех фонов
         const bg0 = new PIXI.Graphics().fill(0x2d2d3a).rect(0, 0, width, height).fill(0x5a4a3a).rect(0, height - 50, width, 50).fill(0x9acde3).rect(100, 50, 150, 150).fill(0x111111).rect(105, 55, 65, 140).fill(0x111111).rect(180, 55, 65, 140).fill(0x4a3a2a).rect(500, 200, 200, 200).fill(0xffffff).rect(520, 180, 50, 20);
-        backgrounds.push(app.renderer.generateTexture(bg0));
+        backgrounds.push(this.app.renderer.generateTexture(bg0));
 
         const bg1 = new PIXI.Graphics().fill(0x787c80).rect(0, 0, width, height).fill(0x3a3a4a).rect(0, height - 100, width, 100).fill(0x8a8a8a).rect(100, 100, 150, 250).fill(0x9a9a9a).rect(400, 50, 200, 300);
-        backgrounds.push(app.renderer.generateTexture(bg1));
+        backgrounds.push(this.app.renderer.generateTexture(bg1));
 
         const bg2 = new PIXI.Graphics().fill(0x6b7a8f).rect(0, 0, width, height).fill(0xc0c0c0).rect(0, 50, width, 10).fill(0x4a3a2a).rect(0, height - 60, width, 60).fill(0x223344).rect(100, 80, 600, 200).fill(0xffffff).rect(150, 300, 100, 50).fill(0xffffff).rect(550, 300, 100, 50);
-        backgrounds.push(app.renderer.generateTexture(bg2));
+        backgrounds.push(this.app.renderer.generateTexture(bg2));
         
         const bg3 = new PIXI.Graphics().fill(0xc0c0c0).rect(0, 0, width, height).fill(0x8a7a6a).rect(0, height - 80, width, 80).fill(0x555555).rect(0, 50, 20, height - 130).fill(0x555555).rect(width - 20, 50, 20, height - 130);
-        backgrounds.push(app.renderer.generateTexture(bg3));
+        backgrounds.push(this.app.renderer.generateTexture(bg3));
         
         const bg4 = new PIXI.Graphics().fill(0xffa07a).rect(0, 0, width, height);
         for(let i = 0; i < 50; i++) {
             bg4.fill(0xffffff, Math.random() * 0.5 + 0.5).circle(Math.random() * width, Math.random() * height * 0.7, Math.random() * 2 + 1);
         }
-        backgrounds.push(app.renderer.generateTexture(bg4));
+        backgrounds.push(this.app.renderer.generateTexture(bg4));
         
         return backgrounds;
     }
